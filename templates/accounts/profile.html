@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ author.username }} — Palate{% endblock %}
+
+{% block content %}
+  <header class="contributor" data-palate data-username="{{ author.username }}">
+    <div>
+      <span class="kicker">Contributor{% if is_me %} · that's you{% endif %}</span>
+      <h1>{{ author.username }}</h1>
+      <p class="standfirst" data-palate-summary>Reading the palate…</p>
+      <p class="kicker">Member since {{ author.date_joined|date:"F Y" }}</p>
+      <ul class="hbars" data-palate-families></ul>
+    </div>
+    <figure class="figure">
+      <div data-palate-radar><div class="skeleton"></div></div>
+      <figcaption class="figure__caption">Palate fingerprint — average of all tastings</figcaption>
+    </figure>
+  </header>
+
+  <section class="section" aria-labelledby="by-title">
+    <div class="section__head">
+      <h2 id="by-title">Tastings by {{ author.username }}</h2>
+      <span class="kicker" data-palate-count></span>
+    </div>
+    <div class="columns" data-palate-grid></div>
+    <div class="results__more"><button class="btn btn--ghost" type="button" data-more hidden>Load more</button></div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="{% static 'js/pages/profile.js' %}"></script>
+{% endblock %}

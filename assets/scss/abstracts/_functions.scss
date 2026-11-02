@@ -1,0 +1,45 @@
+@use "sass:map";
+@use "sass:math";
+@use "tokens" as *;
+
+/// Convert a pixel value to rem relative to the 16px browser default.
+/// @param {Number} $px
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+/// Spacing scale lookup: space(3) → 1.5 × 8px in rem.
+@function space($step) {
+  @if not map.has-key($space, $step) {
+    @error "Unknown space step `#{$step}`. Expected one of #{map.keys($space)}.";
+  }
+
+  @return rem(map.get($space, $step) * $space-unit);
+}
+
+/// Modular type scale: step(0) is the base size, step(3) = base × ratio³.
+@function step($step) {
+  @return rem($type-base * math.pow($type-ratio, $step));
+}
+
+/// Fluid size between two scale steps across the md–xl viewport range.
+@function fluid-step($min-step, $max-step) {
+  $min: $type-base * math.pow($type-ratio, $min-step);
+  $max: $type-base * math.pow($type-ratio, $max-step);
+  $min-vw: map.get($breakpoints, sm);
+  $max-vw: map.get($breakpoints, xl);
+  $slope: math.div($max - $min, $max-vw - $min-vw);
+  $intercept: $min - $slope * $min-vw;
+
+  @return clamp(#{rem($min)}, #{rem($intercept)} + #{$slope * 100vw}, #{rem($max)});
+}
+
+/// z-index lookup so stacking order lives in one place.
+@function z($layer) {
+  @return map.get($z-layers, $layer);
+}
+
+/// Reference a theme token as a CSS custom property.
+@function c($token) {
+  @return var(--#{$token});
+}

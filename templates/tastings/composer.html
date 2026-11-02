@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if tasting %}Edit {{ tasting.name }}{% else %}New tasting{% endif %} — Palate{% endblock %}
+
+{% block content %}
+  <header class="page-head">
+    <div>
+      <span class="kicker">{% if tasting %}Revision{% else %}Composer{% endif %}</span>
+      <h1>{% if tasting %}Revise the tasting{% else %}A new tasting{% endif %}</h1>
+    </div>
+    <p class="standfirst">Describe what is in the glass, the cup or on the plate. Pick flavours on the wheel and sketch the profile.</p>
+  </header>
+
+  <form class="composer" data-composer novalidate
+        data-mode="{% if tasting %}edit{% else %}create{% endif %}"
+        {% if tasting %}data-id="{{ tasting.pk }}"{% endif %}>
+
+    <div class="form-errors" data-form-errors hidden role="alert"></div>
+
+    <section class="composer__section">
+      <div class="composer__label">
+        <h2>The subject</h2>
+        <p>What are you tasting, and who made it?</p>
+      </div>
+      <div class="composer__grid">
+        <div class="field field--wide">
+          <span class="field__label" id="cat-label">Category</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="cat-label" data-category-group>
+            {% for value, label in categories %}
+              <input type="radio" name="category" id="cat-{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+              <label for="cat-{{ value }}">{{ label }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="field field--wide" data-field="name">
+          <label class="field__label" for="c-name">Name</label>
+          <input class="input input--display" id="c-name" name="name" maxlength="120" required placeholder="e.g. Guji Natural">
+          <span class="field__error" data-error></span>
+        </div>
+        <div class="field" data-field="producer">
+          <label class="field__label" for="c-producer">Producer</label>
+          <input class="input" id="c-producer" name="producer" maxlength="120" placeholder="Roaster, estate, maker">
+          <span class="field__error" data-error></span>
+        </div>
+        <div class="field" data-field="origin">
+          <label class="field__label" for="c-origin">Origin</label>
+          <input class="input" id="c-origin" name="origin" maxlength="80" placeholder="Country or region" list="origins">
+          <datalist id="origins">
+            {% for o in origins %}<option value="{{ o }}">{% endfor %}
+          </datalist>
+          <span class="field__error" data-error></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="composer__section">
+      <div class="composer__label">
+        <h2>Particulars</h2>
+        <p>Details change with the category — each one is stored in its own shape.</p>
+      </div>
+      <div class="composer__grid" data-details></div>
+    </section>
+
+    <section class="composer__section">
+      <div class="composer__label">
+        <h2>The palate</h2>
+        <p>Tap notes on the wheel. Tap a family to zoom into it. Up to twelve flavours.</p>
+      </div>
+      <div class="composer__palate">
+        <div class="wheel" data-wheel></div>
+        <div class="selected-flavors">
+          <span class="field__label">Selected</span>
+          <ul class="flavor-list" data-selected></ul>
+          <p class="selected-flavors__empty" data-selected-empty>Nothing yet — start with the dominant note.</p>
+          <span class="field__error" data-field="flavors"><span data-error></span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="composer__section">
+      <div class="composer__label">
+        <h2>The profile</h2>
+        <p>Six axes from 0 to 10. The radar redraws as you go.</p>
+      </div>
+      <div class="composer__profile">
+        <div class="stack" data-sliders>
+          {% for axis in axes %}
+            <div class="composer__slider">
+              <label class="field__label" for="p-{{ axis }}">{{ axis|capfirst }}</label>
+              <input class="range" type="range" id="p-{{ axis }}" name="profile.{{ axis }}" min="0" max="10" step="1" value="5">
+              <output for="p-{{ axis }}">5</output>
+            </div>
+          {% endfor %}
+        </div>
+        <div data-live-radar></div>
+      </div>
+    </section>
+
+    <section class="composer__section">
+      <div class="composer__label">
+        <h2>The verdict</h2>
+        <p>Score out of 100, then write it up like a column.</p>
+      </div>
+      <div class="stack">
+        <div class="score-dial">
+          <output class="score-dial__value numeral" for="c-score" data-score-value>85</output>
+          <div class="stack">
+            <span class="score-dial__word" data-score-word>Excellent</span>
+            <input class="range" type="range" id="c-score" name="score" min="50" max="100" step="1" value="85" aria-label="Score">
+          </div>
+        </div>
+        <div class="field" data-field="notes">
+          <label class="field__label" for="c-notes">Tasting notes</label>
+          <textarea class="input input--area" id="c-notes" name="notes" maxlength="4000" placeholder="The first sentence becomes the standfirst. Write the rest like a column."></textarea>
+          <span class="field__hint" data-notes-counter>0 / 4000</span>
+          <span class="field__error" data-error></span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" name="is_public" checked>
+          <span class="switch__track"></span>
+          <span class="kicker">Publish in the public journal</span>
+        </label>
+      </div>
+    </section>
+
+    <div class="composer__bar">
+      <span class="composer__status" data-status>{% if tasting %}Editing{% else %}Draft is saved on this device as you type{% endif %}</span>
+      <div class="cluster">
+        <a class="btn btn--quiet" href="{% if tasting %}{{ tasting.get_absolute_url }}{% else %}{% url 'tastings:journal' %}{% endif %}">Cancel</a>
+        <button class="btn btn--accent" type="submit" data-submit>{% if tasting %}Save changes{% else %}Publish tasting{% endif %}</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+  {{ wheel|json_script:"wheel-data" }}
+  {{ detail_schema|json_script:"detail-schema" }}
+  {% if initial %}{{ initial|json_script:"initial-data" }}{% endif %}
+  <script type="module" src="{% static 'js/pages/composer.js' %}"></script>
+{% endblock %}

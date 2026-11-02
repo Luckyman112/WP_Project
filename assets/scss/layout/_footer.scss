@@ -1,0 +1,49 @@
+@use "../abstracts" as *;
+
+.colophon {
+  padding: 0 space(2) space(5);
+
+  @include mq(md) {
+    padding: 0 space(4) space(5);
+  }
+
+  &__inner {
+    @include double-rule(top);
+
+    display: grid;
+    gap: space(3);
+    max-width: $page-max;
+    margin: 0 auto;
+    padding-top: space(3);
+
+    @include mq(md) {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: step(3);
+    font-style: italic;
+    line-height: 1;
+  }
+
+  h3 {
+    @include kicker;
+
+    margin-bottom: space(1);
+  }
+
+  ul {
+    @extend %reset-list;
+
+    display: grid;
+    gap: space(1);
+    font-size: step(-1);
+  }
+
+  p {
+    font-size: step(-1);
+    color: c(ink-2);
+  }
+}

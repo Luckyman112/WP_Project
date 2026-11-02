@@ -1,0 +1,190 @@
+@use "../abstracts" as *;
+
+.masthead {
+  padding: 0 space(2);
+
+  @include mq(md) {
+    padding: 0 space(4);
+  }
+
+  &__bar {
+    @include kicker(c(ink-2));
+    @include rule;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(1) space(3);
+    align-items: center;
+    justify-content: space-between;
+    max-width: $page-max;
+    margin: 0 auto;
+    padding: space(1) 0;
+  }
+
+  &__issue {
+    display: none;
+
+    @include mq(sm) {
+      display: inline;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: space(2);
+    align-items: center;
+
+    a {
+      text-decoration: none;
+    }
+
+    form {
+      display: inline;
+    }
+  }
+
+  &__title {
+    display: block;
+    margin: space(3) 0 0;
+    font-family: $font-display;
+    font-size: clamp(#{rem(64px)}, 14vw, #{rem(168px)});
+    font-style: italic;
+    font-weight: 400;
+    font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-align: center;
+    text-decoration: none;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  &__motto {
+    @include kicker;
+
+    margin: space(2) 0 space(3);
+    text-align: center;
+  }
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: z(masthead);
+  padding: 0 space(2);
+  background: c(paper);
+
+  @include mq(md) {
+    padding: 0 space(4);
+  }
+
+  &__inner {
+    @include double-rule(top);
+    @include rule(bottom);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: $page-max;
+    min-height: rem(52px);
+    margin: 0 auto;
+  }
+
+  // Compact logotype that slides in once the big masthead scrolls away.
+  &__logo {
+    font-family: $font-display;
+    font-size: step(2);
+    font-style: italic;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity $duration, transform $duration $ease-out;
+    pointer-events: none;
+
+    .is-scrolled & {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+  }
+
+  &__toggle {
+    @include kicker(c(ink));
+
+    padding: space(1) 0;
+    border: 0;
+    background: none;
+
+    @include mq(md) {
+      display: none;
+    }
+  }
+
+  &__links {
+    @extend %reset-list;
+
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    padding: space(2);
+    background: c(paper);
+    border-bottom: 1px solid c(rule);
+
+    &.is-open {
+      display: flex;
+    }
+
+    @include mq(md) {
+      position: static;
+      display: flex;
+      flex-direction: row;
+      gap: space(4);
+      padding: 0;
+      border: 0;
+    }
+
+    a {
+      @include kicker(c(ink));
+
+      display: block;
+      padding: space(1) 0;
+      text-decoration: none;
+
+      &[aria-current="page"] {
+        color: c(accent);
+        box-shadow: inset 0 -2px 0 c(accent);
+      }
+    }
+  }
+}
+
+.theme-toggle {
+  display: inline-flex;
+  gap: space(1);
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+
+  &__icon {
+    width: 1.1em;
+    height: 1.1em;
+    border: 1.5px solid currentcolor;
+    border-radius: 50%;
+    background: linear-gradient(90deg, currentcolor 50%, transparent 50%);
+    transition: transform 400ms $ease-out;
+
+    [data-theme="dark"] & {
+      transform: rotate(180deg);
+    }
+  }
+}

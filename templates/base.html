@@ -1,0 +1,103 @@
+{% load static palate %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% block description %}Palate — a journal of tasting. Log coffee, tea, chocolate and wine on a shared flavour wheel and discover kindred tastes across categories.{% endblock %}">
+  <meta name="theme-color" content="#f3eee4">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}Palate — a journal of tasting{% endblock %}</title>
+
+  {# Apply the saved theme before first paint to avoid a flash. #}
+  <script>
+    try { const t = localStorage.getItem("palate-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="masthead">
+    <div class="masthead__bar">
+      <span class="masthead__issue">Vol. {{ masthead.volume|stringformat:"d" }} · No. {{ masthead.issue }}</span>
+      <time datetime="{{ masthead.date|date:'Y-m-d' }}">{{ masthead.date|date:"l, j F Y" }}</time>
+      <div class="masthead__actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle night edition">
+          <span class="theme-toggle__icon" aria-hidden="true"></span>
+          <span data-theme-label>Night edition</span>
+        </button>
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:profile' user.username %}">{{ user.username }}</a>
+          <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="theme-toggle">Sign out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}">Sign in</a>
+          <a href="{% url 'accounts:signup' %}">Join</a>
+        {% endif %}
+      </div>
+    </div>
+    {% block masthead %}{% endblock %}
+  </header>
+
+  <nav class="site-nav{% block nav_class %} is-scrolled{% endblock %}" aria-label="Primary" data-site-nav>
+    <div class="site-nav__inner">
+      <a class="site-nav__logo" href="{% url 'tastings:home' %}">Palate</a>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>Menu</button>
+      <ul class="site-nav__links" id="nav-links">
+        <li><a href="{% url 'tastings:home' %}" {% nav_active 'tastings:home' %}>Cover</a></li>
+        <li><a href="{% url 'tastings:journal' %}" {% nav_active 'tastings:journal' %}>Journal</a></li>
+        <li><a href="{% url 'tastings:compare' %}" {% nav_active 'tastings:compare' %}>Compare</a></li>
+        <li><a href="{% url 'tastings:almanac' %}" {% nav_active 'tastings:almanac' %}>Almanac</a></li>
+        <li><a href="{% url 'tastings:create' %}" {% nav_active 'tastings:create' %}>+ New tasting</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main" class="page {% block page_class %}{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="colophon">
+    <div class="colophon__inner">
+      <div>
+        <p class="colophon__title">Palate</p>
+        <p>A journal of tasting. One flavour wheel for coffee, tea, chocolate and wine — so a Kenyan coffee can find its kindred Pinot.</p>
+      </div>
+      <div>
+        <h3>Sections</h3>
+        <ul>
+          <li><a href="{% url 'tastings:journal' %}">The Journal</a></li>
+          <li><a href="{% url 'tastings:compare' %}">Side by side</a></li>
+          <li><a href="{% url 'tastings:almanac' %}">The Almanac</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Colophon</h3>
+        <ul>
+          <li><a href="/api/">REST API</a></li>
+          <li>Django · MongoDB · Sass</li>
+          <li>Set in Fraunces &amp; Source Serif</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toasts" role="status" aria-live="polite" data-toasts></div>
+
+  {% if messages %}
+    <ul class="messages" hidden data-messages>
+      {% for message in messages %}<li data-level="{{ message.tags }}">{{ message }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+
+  <script type="module" src="{% static 'js/main.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

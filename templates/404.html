@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Not found — Palate{% endblock %}
+{% block content %}
+  <section class="not-found">
+    <p class="not-found__code">404</p>
+    <h1>This page was never bottled.</h1>
+    <p class="standfirst">Whatever you were looking for has been drunk, eaten or never existed.</p>
+    <a class="btn btn--primary" href="{% url 'tastings:journal' %}">Browse the journal</a>
+  </section>
+{% endblock %}

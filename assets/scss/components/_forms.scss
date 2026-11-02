@@ -1,0 +1,213 @@
+@use "../abstracts" as *;
+
+.field {
+  display: grid;
+  gap: space(1);
+
+  &__label {
+    @include kicker(c(ink-2));
+  }
+
+  &__hint {
+    font-size: step(-1);
+    color: c(muted);
+  }
+
+  &__error {
+    font-family: $font-mono;
+    font-size: step(-2);
+    color: c(danger);
+  }
+
+  &.has-error .input {
+    border-bottom-color: c(danger);
+  }
+}
+
+.input {
+  width: 100%;
+  min-height: rem(44px);
+  padding: space(1) 0;
+  border: 0;
+  border-bottom: 1px solid c(ink-2);
+  border-radius: 0;
+  background: transparent;
+  font-family: $font-text;
+  font-size: step(0);
+  transition: border-color $duration;
+
+  &::placeholder {
+    color: c(muted);
+    font-style: italic;
+  }
+
+  &:focus {
+    border-bottom-color: c(accent);
+    outline: none;
+    box-shadow: 0 1px 0 c(accent);
+  }
+
+  &--display {
+    font-family: $font-display;
+    font-size: fluid-step(2, 4);
+    font-weight: 500;
+  }
+
+  &--area {
+    min-height: rem(180px);
+    padding: space(2);
+    border: 1px solid c(rule);
+    background: c(paper-2);
+    line-height: 1.6;
+    resize: vertical;
+
+    &:focus {
+      border-color: c(accent);
+    }
+  }
+}
+
+select.input {
+  appearance: none;
+  padding-right: space(4);
+  background-image: linear-gradient(45deg, transparent 50%, currentcolor 50%),
+    linear-gradient(135deg, currentcolor 50%, transparent 50%);
+  background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
+}
+
+// Segmented control built from radio inputs.
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-self: start;
+  border: 1px solid c(ink);
+
+  input {
+    @extend %sr-only;
+  }
+
+  label {
+    @include kicker(c(ink));
+
+    padding: space(1) space(2);
+    cursor: pointer;
+    transition: background $duration, color $duration;
+  }
+
+  label + input + label {
+    border-left: 1px solid c(ink);
+  }
+
+  input:checked + label {
+    background: var(--cat, c(ink));
+    color: c(paper);
+  }
+
+  input:focus-visible + label {
+    @include focus-ring;
+  }
+}
+
+// Range slider with a themed thumb and filled track.
+.range {
+  --fill: 50%;
+
+  width: 100%;
+  height: rem(28px);
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+
+  &::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(90deg, c(ink) var(--fill), c(rule) var(--fill));
+  }
+
+  &::-moz-range-track {
+    height: 2px;
+    background: linear-gradient(90deg, c(ink) var(--fill), c(rule) var(--fill));
+  }
+
+  &::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+    margin-top: -8px;
+    border: 2px solid c(ink);
+    border-radius: 50%;
+    background: c(paper);
+    appearance: none;
+    transition: transform 150ms;
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 2px solid c(ink);
+    border-radius: 50%;
+    background: c(paper);
+  }
+
+  &:active::-webkit-slider-thumb {
+    transform: scale(1.25);
+  }
+}
+
+.switch {
+  display: inline-flex;
+  gap: space(1);
+  align-items: center;
+  cursor: pointer;
+
+  input {
+    @extend %sr-only;
+  }
+
+  &__track {
+    position: relative;
+    width: 2.4em;
+    height: 1.3em;
+    border: 1px solid c(ink);
+    border-radius: 999px;
+    transition: background $duration;
+
+    &::after {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: calc(1.3em - 6px);
+      height: calc(1.3em - 6px);
+      border-radius: 50%;
+      background: c(ink);
+      content: "";
+      transition: transform $duration $ease-out, background $duration;
+    }
+  }
+
+  input:checked + &__track {
+    background: c(ink);
+
+    &::after {
+      background: c(paper);
+      transform: translateX(1.1em);
+    }
+  }
+
+  input:focus-visible + &__track {
+    @include focus-ring;
+  }
+}
+
+.form-errors {
+  padding: space(2);
+  border-left: 3px solid c(danger);
+  background: c(paper-2);
+  color: c(danger);
+  font-size: step(-1);
+
+  ul {
+    margin: 0;
+    padding-left: space(2);
+  }
+}

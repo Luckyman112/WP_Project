@@ -1,0 +1,15 @@
+{% load palate %}
+<article class="entry cat-{{ t.category }}" style="--i: {{ forloop.counter0|default:0 }}">
+  <div class="entry__meta">
+    <span class="cat-label">{{ t.get_category_display }}</span>
+    <span class="entry__no">No. {{ t.issue_number }}</span>
+  </div>
+  <h3 class="entry__title"><a href="{{ t.get_absolute_url }}">{{ t.name }}</a></h3>
+  <span class="entry__score numeral" aria-label="Score {{ t.score }} out of 100">{{ t.score }}</span>
+  <p class="entry__sub">{{ t.producer|default:"Unknown producer" }}{% if t.origin %} · {{ t.origin }}{% endif %}</p>
+  <div class="entry__radar" data-radar="{{ t.profile|as_json }}" data-mini aria-hidden="true"></div>
+  <div class="entry__foot">
+    <span class="flavor-dots" aria-hidden="true">{% for f in t.flavors %}<span style="--dot: {{ f|flavor_color }}"></span>{% endfor %}</span>
+    <span>♥ {{ t.like_count }} · ✉ {{ t.comments|length }} · {{ t.author.username }}</span>
+  </div>
+</article>

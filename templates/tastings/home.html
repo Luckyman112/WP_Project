@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load palate %}
+
+{% block masthead %}
+  <a class="masthead__title" href="{% url 'tastings:home' %}">Palate</a>
+  <p class="masthead__motto">A journal of tasting — coffee · tea · chocolate · wine</p>
+{% endblock %}
+{% block nav_class %}{% endblock %}
+
+{% block content %}
+  {% if featured %}
+    <section class="cover cat-{{ featured.category }}" aria-labelledby="cover-title">
+      <div>
+        <span class="kicker">Cover story · </span> <span class="cat-label">{{ featured.get_category_display }}</span>
+        <h1 class="cover__title" id="cover-title"><a href="{{ featured.get_absolute_url }}">{{ featured.name }}</a></h1>
+        <p class="standfirst">{{ featured.notes|standfirst }}</p>
+        <p class="cover__byline">
+          Tasted by <a href="{% url 'accounts:profile' featured.author.username %}">{{ featured.author.username }}</a>
+          · {{ featured.producer }}{% if featured.origin %}, {{ featured.origin }}{% endif %}
+          · {{ featured.created_at|date:"j F Y" }}
+        </p>
+        <a class="btn btn--primary" href="{{ featured.get_absolute_url }}">Read the tasting →</a>
+      </div>
+      <figure class="cover__figure">
+        <span class="cover__score numeral">{{ featured.score }}<small>{{ featured.score|verdict }}</small></span>
+        <div data-radar="{{ featured.profile|as_json }}" data-labels></div>
+        <figcaption class="sr-only">Sensory profile of {{ featured.name }}</figcaption>
+      </figure>
+    </section>
+  {% endif %}
+
+  {% if pairing %}
+    <section class="pairing" aria-labelledby="pairing-title">
+      <div class="pairing__item cat-{{ pairing.a.category }}">
+        <span class="cat-label">{{ pairing.a.get_category_display }}</span>
+        <h3><a href="{{ pairing.a.get_absolute_url }}">{{ pairing.a.name }}</a></h3>
+        <p>{{ pairing.a.origin }}</p>
+      </div>
+      <div class="pairing__amp" aria-hidden="true">&amp;</div>
+      <div class="pairing__item cat-{{ pairing.b.category }}">
+        <span class="cat-label">{{ pairing.b.get_category_display }}</span>
+        <h3><a href="{{ pairing.b.get_absolute_url }}">{{ pairing.b.name }}</a></h3>
+        <p>{{ pairing.b.origin }}</p>
+      </div>
+      <p class="pairing__note" id="pairing-title">
+        <span class="kicker">The unexpected pairing · {{ pairing.b.match_percent }}% kindred</span><br>
+        Different categories, the same palate: they share
+        {% for f in pairing.b.shared_flavors %}<em>{{ f.label|lower }}</em>{% if not forloop.last %}, {% endif %}{% empty %}a strikingly similar profile{% endfor %}.
+        <a href="{% url 'tastings:compare' %}?a={{ pairing.a.pk }}&amp;b={{ pairing.b.pk }}">Compare side by side →</a>
+      </p>
+    </section>
+  {% endif %}
+
+  <section class="section" aria-labelledby="latest-title">
+    <div class="section__head">
+      <h2 id="latest-title">Latest entries</h2>
+      <a class="kicker" href="{% url 'tastings:journal' %}">The full journal →</a>
+    </div>
+    {% if latest %}
+      <div class="columns">
+        {% for t in latest %}{% include "tastings/_entry.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        <p class="empty__mark">Ø</p>
+        <p>The journal is empty. <a href="{% url 'tastings:create' %}">Write the first tasting.</a></p>
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="section" aria-labelledby="numbers-title">
+    <div class="section__head">
+      <h2 id="numbers-title">By the numbers</h2>
+      <a class="kicker" href="{% url 'tastings:almanac' %}">The Almanac →</a>
+    </div>
+    <div class="numbers">
+      <div class="numbers__item"><span class="numbers__value numeral" data-count-to="{{ totals.tastings }}">{{ totals.tastings }}</span><span class="numbers__label">Tastings</span></div>
+      <div class="numbers__item"><span class="numbers__value numeral" data-count-to="{{ totals.origins }}">{{ totals.origins }}</span><span class="numbers__label">Origins</span></div>
+      <div class="numbers__item"><span class="numbers__value numeral" data-count-to="{{ totals.avg_score }}">{{ totals.avg_score }}</span><span class="numbers__label">Average score</span></div>
+      <div class="numbers__item"><span class="numbers__value numeral" data-count-to="{{ totals.comments }}">{{ totals.comments }}</span><span class="numbers__label">Letters</span></div>
+    </div>
+  </section>
+{% endblock %}

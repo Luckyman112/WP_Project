@@ -1,0 +1,118 @@
+@use "sass:list";
+@use "../abstracts" as *;
+
+// Button variants are generated from a map: background, text and border.
+$button-variants: (
+  primary: (c(ink), c(paper), c(ink)),
+  accent: (c(accent), c(accent-ink), c(accent)),
+  ghost: (transparent, c(ink), c(ink)),
+  quiet: (transparent, c(ink-2), transparent),
+  danger: (transparent, c(danger), c(danger)),
+);
+
+.btn {
+  @include kicker(inherit);
+
+  display: inline-flex;
+  gap: space(1);
+  align-items: center;
+  justify-content: center;
+  min-height: rem(44px);
+  padding: space(1) space(3);
+  border: 1px solid transparent;
+  border-radius: $radius;
+  font-size: step(-1);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background $duration, color $duration, transform 120ms;
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  @each $name, $colors in $button-variants {
+    &--#{$name} {
+      border-color: list.nth($colors, 3);
+      background: list.nth($colors, 1);
+      color: list.nth($colors, 2);
+
+      &:hover:not(:disabled) {
+        border-color: c(accent);
+        background: c(accent);
+        color: c(accent-ink);
+      }
+    }
+  }
+
+  &--small {
+    min-height: rem(34px);
+    padding: space(0) space(2);
+  }
+
+  &.is-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+
+    &::after {
+      position: absolute;
+      width: 1em;
+      height: 1em;
+      border: 2px solid c(paper);
+      border-right-color: transparent;
+      border-radius: 50%;
+      content: "";
+      animation: spin 700ms linear infinite;
+    }
+  }
+}
+
+// "Savour" (like) button with a filling heart.
+.savour {
+  display: inline-flex;
+  gap: space(1);
+  align-items: center;
+  padding: space(1) space(2);
+  border: 1px solid c(rule);
+  border-radius: 999px;
+  background: none;
+  font-family: $font-mono;
+  font-size: step(-1);
+
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+    fill: transparent;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    transition: fill $duration, transform 300ms $ease-out;
+  }
+
+  &[aria-pressed="true"] {
+    border-color: c(accent);
+    color: c(accent);
+
+    svg {
+      fill: c(accent);
+      animation: pop 400ms $ease-out;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pop {
+  40% {
+    transform: scale(1.35);
+  }
+}

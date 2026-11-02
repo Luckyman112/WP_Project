@@ -1,0 +1,60 @@
+@use "../abstracts" as *;
+
+.chip {
+  display: inline-flex;
+  gap: 0.45em;
+  align-items: center;
+  padding: 0.3em 0.8em;
+  border: 1px solid c(rule);
+  border-radius: 999px;
+  background: transparent;
+  font-family: $font-mono;
+  font-size: step(-2);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color $duration, background $duration, color $duration;
+
+  &__dot {
+    width: 0.65em;
+    height: 0.65em;
+    border-radius: 50%;
+    background: var(--dot, c(muted));
+  }
+
+  &:is(button, a):hover {
+    border-color: c(ink);
+    color: c(ink);
+  }
+
+  &[aria-pressed="true"],
+  &.is-active {
+    border-color: c(ink);
+    background: c(ink);
+    color: c(paper);
+  }
+}
+
+// Category label, coloured by the `.cat-*` utility on an ancestor.
+.cat-label {
+  @include kicker(var(--cat));
+
+  display: inline-flex;
+  gap: 0.5em;
+  align-items: center;
+
+  &::before {
+    width: 0.6em;
+    height: 0.6em;
+    background: var(--cat);
+    content: "";
+  }
+}
+
+.flavor-list {
+  @extend %reset-list;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: space(1);
+}

@@ -1,0 +1,105 @@
+@use "sass:map";
+@use "tokens" as *;
+@use "functions" as *;
+
+/// Mobile-first media query: @include mq(md) { ... }
+@mixin mq($bp) {
+  @if not map.has-key($breakpoints, $bp) {
+    @error "Unknown breakpoint `#{$bp}`.";
+  }
+
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+/// Emit every key of a theme map as a custom property.
+@mixin theme-vars($theme) {
+  @each $name, $value in $theme {
+    --#{$name}: #{$value};
+  }
+}
+
+/// Small-caps monospaced label used for kickers, bylines and meta.
+@mixin kicker($color: c(muted)) {
+  font-family: $font-mono;
+  font-size: step(-2);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $color;
+}
+
+/// Hairline or heavy editorial rule.
+@mixin rule($side: bottom, $weight: 1px, $style: solid) {
+  border-#{$side}: $weight $style c(rule);
+}
+
+@mixin double-rule($side: bottom) {
+  border-#{$side}: 3px double c(ink);
+}
+
+@mixin focus-ring {
+  outline: 2px solid c(accent);
+  outline-offset: 3px;
+}
+
+/// Magazine drop cap on the first letter of a paragraph.
+@mixin drop-cap($lines: 3) {
+  &::first-letter {
+    float: left;
+    margin: 0.06em 0.08em 0 0;
+    font-family: $font-display;
+    font-size: calc(#{$lines} * 1.15em);
+    font-weight: 600;
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+    line-height: 0.8;
+    color: c(accent);
+  }
+}
+
+@mixin hover-lift {
+  transition: transform $duration $ease-out, box-shadow $duration $ease-out;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px -12px c(shadow);
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin dark {
+  :root[data-theme="dark"] & {
+    @content;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) & {
+      @content;
+    }
+  }
+}
+
+/// Visually hidden but available to screen readers.
+%sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+%reset-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

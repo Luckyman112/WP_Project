@@ -1,0 +1,116 @@
+@use "../abstracts" as *;
+
+.article {
+  &__head {
+    @include rule;
+
+    max-width: rem(980px);
+    margin-bottom: space(5);
+    padding-bottom: space(4);
+
+    h1 {
+      margin: space(2) 0 space(3);
+      font-size: fluid-step(5, 8);
+      font-weight: 400;
+      font-variation-settings: "SOFT" 100, "opsz" 144;
+    }
+  }
+
+  &__byline {
+    @include kicker(c(ink-2));
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(1) space(3);
+    margin-top: space(3);
+
+    a {
+      color: c(ink);
+    }
+  }
+
+  &__layout {
+    display: grid;
+    gap: space(6);
+
+    @include mq(lg) {
+      grid-template-columns: minmax(0, 1fr) rem(340px);
+    }
+  }
+
+  &__aside {
+    display: grid;
+    gap: space(4);
+    align-content: start;
+
+    @include mq(lg) {
+      position: sticky;
+      top: rem(76px);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(1);
+    align-items: center;
+  }
+}
+
+.verdict-box {
+  display: flex;
+  gap: space(2);
+  align-items: end;
+  padding: space(2);
+  border: 1px solid c(ink);
+  background: var(--cat-soft);
+
+  &__score {
+    font-size: step(8);
+    color: var(--cat);
+  }
+
+  &__word {
+    font-family: $font-display;
+    font-size: step(2);
+    font-style: italic;
+    line-height: 1.1;
+  }
+}
+
+.spec {
+  margin: 0;
+
+  &__title {
+    @include kicker(c(ink));
+    @include double-rule;
+
+    padding-bottom: space(1);
+  }
+
+  div {
+    @include rule(bottom, 1px, dotted);
+
+    display: flex;
+    justify-content: space-between;
+    gap: space(2);
+    padding: space(1) 0;
+    font-size: step(-1);
+  }
+
+  dt {
+    @include kicker;
+  }
+
+  dd {
+    margin: 0;
+    text-align: right;
+  }
+}
+
+.kindred {
+  &__tabs {
+    display: flex;
+    gap: space(1);
+  }
+}

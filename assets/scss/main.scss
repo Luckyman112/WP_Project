@@ -1,0 +1,17 @@
+// =============================================================================
+// Palate — stylesheet entry point
+//
+// Architecture (a slimmed 7-1 pattern):
+//   abstracts/   tokens, functions, mixins — emit no CSS on their own
+//   base/        reset, theme custom properties, typography, utilities
+//   layout/      masthead, navigation, page containers, footer
+//   components/  reusable UI pieces (buttons, cards, radar, wheel, …)
+//   pages/       page-specific composition
+//
+// Build: Sass → PostCSS (preset-env, autoprefixer, cssnano). See package.json.
+// =============================================================================
+
+@use "base";
+@use "layout";
+@use "components";
+@use "pages";

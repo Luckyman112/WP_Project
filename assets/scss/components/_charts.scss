@@ -1,0 +1,79 @@
+@use "../abstracts" as *;
+
+.chart {
+  width: 100%;
+  overflow: visible;
+
+  &__bar {
+    fill: var(--bar, c(ink));
+    transition: opacity $duration;
+    animation: grow 700ms $ease-out both;
+    transform-box: fill-box;
+    transform-origin: bottom;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+
+  &__label,
+  &__value {
+    font-family: $font-mono;
+    font-size: 11px;
+    fill: c(ink-2);
+  }
+
+  &__value {
+    font-weight: 600;
+    fill: c(ink);
+  }
+
+  &__axis {
+    stroke: c(ink);
+  }
+}
+
+// Horizontal bars rendered as HTML (more accessible for ranked lists).
+.hbars {
+  @extend %reset-list;
+
+  display: grid;
+  gap: space(2);
+
+  li {
+    display: grid;
+    grid-template-columns: minmax(7rem, 30%) 1fr auto;
+    gap: space(2);
+    align-items: center;
+    font-size: step(-1);
+  }
+
+  &__track {
+    height: 10px;
+    background: c(paper-2);
+  }
+
+  &__fill {
+    width: var(--w);
+    height: 100%;
+    background: var(--bar, c(ink));
+    animation: fill 900ms $ease-out both;
+  }
+
+  &__value {
+    font-family: $font-mono;
+    font-size: step(-2);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes fill {
+  from {
+    width: 0;
+  }
+}

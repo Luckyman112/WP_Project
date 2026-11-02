@@ -1,0 +1,87 @@
+@use "../abstracts" as *;
+
+// Sunburst flavour wheel: inner ring = families, outer ring = notes.
+.wheel {
+  position: relative;
+  width: 100%;
+  max-width: rem(520px);
+  margin: 0 auto;
+
+  svg {
+    width: 100%;
+    overflow: visible;
+  }
+
+  &__family {
+    stroke: c(paper);
+    stroke-width: 2;
+    cursor: pointer;
+    transition: opacity $duration, filter $duration;
+  }
+
+  &__note {
+    fill: var(--tone);
+    fill-opacity: 0.22;
+    stroke: c(paper);
+    stroke-width: 2;
+    cursor: pointer;
+    transition: fill-opacity $duration, transform 300ms $ease-out;
+    transform-origin: center;
+
+    &:hover,
+    &:focus-visible {
+      fill-opacity: 0.5;
+      outline: none;
+    }
+
+    &.is-selected {
+      fill-opacity: 1;
+    }
+  }
+
+  &__text {
+    font-family: $font-mono;
+    font-size: 8.5px;
+    letter-spacing: 0.04em;
+    fill: c(ink);
+    pointer-events: none;
+
+    &--family {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      fill: #fffaf2;
+    }
+
+    &.is-selected {
+      fill: #fffaf2;
+    }
+  }
+
+  &.is-focused &__family:not(.is-focus),
+  &.is-focused &__note:not(.is-focus) {
+    opacity: 0.25;
+  }
+
+  &__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  &__count {
+    display: block;
+    font-family: $font-display;
+    font-size: step(5);
+    line-height: 1;
+  }
+
+  &__caption {
+    @include kicker;
+  }
+}

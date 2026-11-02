@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}The Journal — Palate{% endblock %}
+
+{% block content %}
+  <header class="page-head">
+    <div>
+      <span class="kicker">Archive</span>
+      <h1>The Journal</h1>
+    </div>
+    <p class="standfirst">Every public tasting, filterable by category, flavour family and score.</p>
+  </header>
+
+  <div class="journal">
+    <aside class="filters" aria-label="Filters">
+      <form class="stack" data-filters role="search">
+        <div class="field">
+          <label class="field__label" for="f-q">Search</label>
+          <input class="input" id="f-q" name="q" type="search" placeholder="Name, producer, origin, notes…" autocomplete="off">
+        </div>
+
+        <fieldset class="filters__group">
+          <legend class="filters__title">Category</legend>
+          <div class="cluster">
+            {% for value, label in categories %}
+              <button type="button" class="chip cat-{{ value }}" data-category="{{ value }}" aria-pressed="false">
+                <span class="chip__dot" style="--dot: var(--cat)"></span>{{ label }}
+              </button>
+            {% endfor %}
+          </div>
+        </fieldset>
+
+        <fieldset class="filters__group">
+          <legend class="filters__title">Flavour family</legend>
+          <div class="cluster">
+            {% for family in wheel %}
+              <button type="button" class="chip" data-family="{{ family.id }}" aria-pressed="false">
+                <span class="chip__dot" style="--dot: {{ family.color }}"></span>{{ family.label }}
+              </button>
+            {% endfor %}
+          </div>
+        </fieldset>
+
+        <div class="filters__group">
+          <label class="filters__title" for="f-score">Minimum score</label>
+          <input class="range" id="f-score" name="min_score" type="range" min="50" max="100" step="1" value="50">
+          <div class="filters__score"><span>50</span><output for="f-score" data-score-out>Any</output><span>100</span></div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="f-sort">Order by</label>
+          <select class="input" id="f-sort" name="sort">
+            <option value="newest">Newest first</option>
+            <option value="score">Highest score</option>
+            <option value="oldest">Oldest first</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+
+        {% if user.is_authenticated %}
+          <label class="switch">
+            <input type="checkbox" name="liked" value="1">
+            <span class="switch__track"></span>
+            <span class="kicker">Only what I savoured</span>
+          </label>
+        {% endif %}
+
+        <button type="reset" class="btn btn--quiet btn--small">Clear filters</button>
+      </form>
+    </aside>
+
+    <section class="results" aria-live="polite" data-results>
+      <div class="results__head">
+        <p class="results__count" data-count>Loading…</p>
+        <a class="btn btn--accent btn--small" href="{% url 'tastings:create' %}">+ New tasting</a>
+      </div>
+      <div class="columns" data-grid></div>
+      <div class="empty" data-empty hidden>
+        <p class="empty__mark">Ø</p>
+        <p>Nothing matches that palate. Try loosening a filter.</p>
+      </div>
+      <div class="results__more">
+        <button class="btn btn--ghost" type="button" data-more hidden>Load more</button>
+      </div>
+      <div data-sentinel aria-hidden="true"></div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ wheel|json_script:"wheel-data" }}
+  <script type="module" src="{% static 'js/pages/journal.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,114 @@
+@use "../abstracts" as *;
+
+body {
+  font-family: $font-text;
+  font-size: step(0);
+  font-optical-sizing: auto;
+  line-height: 1.6;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 space(2);
+  font-family: $font-display;
+  font-weight: 500;
+  font-variation-settings: "SOFT" 50;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: fluid-step(4, 7);
+}
+
+h2 {
+  font-size: fluid-step(3, 4);
+}
+
+h3 {
+  font-size: step(2);
+}
+
+h4 {
+  font-size: step(1);
+}
+
+p {
+  margin: 0 0 space(2);
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: c(rule);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color $duration, text-decoration-color $duration;
+
+  &:hover {
+    color: c(accent);
+    text-decoration-color: currentcolor;
+  }
+}
+
+em,
+i {
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+}
+
+small {
+  font-size: step(-1);
+}
+
+hr {
+  margin: space(5) 0;
+  border: 0;
+
+  @include rule(top);
+}
+
+blockquote {
+  margin: space(4) 0;
+  padding-left: space(3);
+  border-left: 3px solid c(accent);
+  font-family: $font-display;
+  font-size: step(2);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.kicker {
+  @include kicker;
+
+  display: inline-block;
+}
+
+.standfirst {
+  max-width: $measure;
+  font-family: $font-display;
+  font-size: fluid-step(1, 2);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.35;
+  color: c(ink-2);
+}
+
+.prose {
+  max-width: $measure;
+
+  > p:first-of-type {
+    @include drop-cap;
+  }
+}
+
+.numeral {
+  font-family: $font-display;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 600;
+  line-height: 1;
+}

@@ -1,0 +1,80 @@
+@use "../abstracts" as *;
+
+.radar {
+  width: 100%;
+  max-width: rem(440px);
+  margin-inline: auto;
+  overflow: visible;
+
+  &__grid {
+    fill: none;
+    stroke: c(rule);
+    stroke-width: 1;
+
+    &:last-of-type {
+      stroke: c(ink-2);
+    }
+  }
+
+  &__spoke {
+    stroke: c(rule);
+    stroke-dasharray: 2 3;
+  }
+
+  &__label {
+    font-family: $font-mono;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: c(ink-2);
+  }
+
+  &__value {
+    font-family: $font-mono;
+    font-size: 9px;
+    fill: c(muted);
+  }
+
+  &__area {
+    fill: var(--series, c(accent));
+    fill-opacity: 0.18;
+    stroke: var(--series, c(accent));
+    stroke-linejoin: round;
+    stroke-width: 2;
+    transition: d 350ms $ease-out;
+  }
+
+  &__point {
+    fill: c(paper);
+    stroke: var(--series, c(accent));
+    stroke-width: 2;
+    transition: cx 350ms $ease-out, cy 350ms $ease-out;
+  }
+
+  &--mini &__label,
+  &--mini &__point {
+    display: none;
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: space(2);
+  justify-content: center;
+  font-family: $font-mono;
+  font-size: step(-2);
+
+  span {
+    display: inline-flex;
+    gap: 0.5em;
+    align-items: center;
+
+    &::before {
+      width: 1.4em;
+      height: 3px;
+      background: var(--series);
+      content: "";
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Side by side — Palate{% endblock %}
+
+{% block content %}
+  <header class="page-head">
+    <div>
+      <span class="kicker">Analysis</span>
+      <h1>Side by side</h1>
+    </div>
+    <p class="standfirst">Lay two tastings over each other — even a tea and a wine — and see where their palates meet.</p>
+  </header>
+
+  <form class="compare__pickers" data-compare-form>
+    <div class="field">
+      <label class="field__label" for="cmp-a">First tasting</label>
+      <select class="input" id="cmp-a" name="a">
+        <option value="">Choose…</option>
+        {% for o in options %}<option value="{{ o.id }}" {% if o.id == a %}selected{% endif %}>{{ o.name }} — {{ o.category }}</option>{% endfor %}
+      </select>
+    </div>
+    <span class="compare__vs" aria-hidden="true">vs.</span>
+    <div class="field">
+      <label class="field__label" for="cmp-b">Second tasting</label>
+      <select class="input" id="cmp-b" name="b">
+        <option value="">Choose…</option>
+        {% for o in options %}<option value="{{ o.id }}" {% if o.id == b %}selected{% endif %}>{{ o.name }} — {{ o.category }}</option>{% endfor %}
+      </select>
+    </div>
+  </form>
+
+  <div class="empty" data-compare-empty>
+    <p class="empty__mark">⇄</p>
+    <p>Pick two tastings to compare their profiles and flavours.</p>
+  </div>
+
+  <div class="compare__stage" data-compare-stage hidden>
+    <div class="compare__side" data-side="a"></div>
+    <div>
+      <div data-compare-radar></div>
+      <div class="legend" data-compare-legend></div>
+      <ul class="compare__diff" data-compare-diff></ul>
+      <div class="compare__shared" data-compare-shared></div>
+    </div>
+    <div class="compare__side" data-side="b"></div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="{% static 'js/pages/compare.js' %}"></script>
+{% endblock %}

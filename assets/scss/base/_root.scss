@@ -1,0 +1,41 @@
+@use "sass:color";
+@use "sass:map";
+@use "../abstracts" as *;
+
+// Light theme by default, dark when the OS asks for it (unless the reader
+// picked light explicitly), and dark when the reader picks the Night edition.
+:root {
+  @include theme-vars(map.get($themes, light));
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    @include theme-vars(map.get($themes, dark));
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  @include theme-vars(map.get($themes, dark));
+
+  color-scheme: dark;
+}
+
+// Category colours: `.cat-coffee` sets `--cat`, and components simply use
+// var(--cat). The dark theme receives a lightened variant generated here.
+@each $name, $tone in $categories {
+  $night: color.adjust($tone, $lightness: 28%);
+
+  .cat-#{$name} {
+    --cat: #{$tone};
+    --cat-soft: #{color.change($tone, $alpha: 0.12)};
+
+    @include dark {
+      --cat: #{$night};
+      --cat-soft: #{color.change($night, $alpha: 0.16)};
+    }
+  }
+}

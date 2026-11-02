@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Sign in — Palate{% endblock %}
+{% block page_class %}page--narrow{% endblock %}
+
+{% block content %}
+  <section class="auth">
+    <span class="kicker">Members</span>
+    <h1>Sign in</h1>
+    <p class="standfirst">Welcome back to the tasting table.</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}
+        <div class="field{% if field.errors %} has-error{% endif %}">
+          <label class="field__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <input class="input" type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" {% if field.field.required %}required{% endif %} autocomplete="{% if field.name == 'password' %}current-password{% else %}username{% endif %}">
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="btn btn--primary" type="submit">Sign in</button>
+      <p class="muted">New here? <a href="{% url 'accounts:signup' %}">Join the journal</a>.</p>
+    </form>
+  </section>
+{% endblock %}

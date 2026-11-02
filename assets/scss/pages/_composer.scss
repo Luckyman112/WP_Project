@@ -1,0 +1,144 @@
+@use "../abstracts" as *;
+
+// Sections are numbered I, II, III… with a CSS counter.
+.composer {
+  counter-reset: section;
+
+  &__section {
+    display: grid;
+    gap: space(3);
+    padding: space(5) 0;
+    counter-increment: section;
+
+    @include rule;
+
+    @include mq(lg) {
+      grid-template-columns: rem(220px) minmax(0, 1fr);
+      gap: space(5);
+    }
+  }
+
+  &__label {
+    h2 {
+      margin: 0;
+      font-size: step(3);
+
+      &::before {
+        display: block;
+        margin-bottom: space(1);
+        font-family: $font-display;
+        font-size: step(5);
+        font-style: italic;
+        font-weight: 300;
+        line-height: 1;
+        color: c(accent);
+        content: counter(section, upper-roman) ".";
+      }
+    }
+
+    p {
+      margin-top: space(1);
+      font-size: step(-1);
+      color: c(ink-2);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    gap: space(3);
+
+    @include mq(md) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__palate {
+    display: grid;
+    gap: space(4);
+
+    @include mq(xl) {
+      grid-template-columns: minmax(0, 1fr) rem(260px);
+      align-items: start;
+    }
+  }
+
+  &__profile {
+    display: grid;
+    gap: space(4);
+    align-items: center;
+
+    @include mq(md) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+
+  &__slider {
+    display: grid;
+    grid-template-columns: rem(110px) 1fr rem(28px);
+    gap: space(2);
+    align-items: center;
+
+    output {
+      font-family: $font-mono;
+      text-align: right;
+    }
+  }
+
+  &__bar {
+    position: sticky;
+    bottom: 0;
+    z-index: z(sticky);
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(2);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: space(4);
+    padding: space(2) 0;
+    background: c(paper);
+
+    @include double-rule(top);
+  }
+
+  &__status {
+    @include kicker;
+  }
+}
+
+.selected-flavors {
+  display: grid;
+  gap: space(2);
+  align-content: start;
+
+  &__empty {
+    font-style: italic;
+    color: c(muted);
+  }
+}
+
+.score-dial {
+  display: grid;
+  gap: space(2);
+  align-items: center;
+
+  @include mq(md) {
+    grid-template-columns: auto 1fr;
+    gap: space(4);
+  }
+
+  &__value {
+    font-size: step(9);
+    color: var(--cat, c(accent));
+    transition: color $duration;
+  }
+
+  &__word {
+    font-family: $font-display;
+    font-size: step(3);
+    font-style: italic;
+  }
+}

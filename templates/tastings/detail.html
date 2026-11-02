@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static palate %}
+{% block title %}{{ tasting.name }} — Palate{% endblock %}
+{% block description %}{{ tasting.notes|standfirst }}{% endblock %}
+
+{% block content %}
+<article class="article cat-{{ tasting.category }}">
+  <header class="article__head">
+    <span class="cat-label">{{ tasting.get_category_display }}</span>
+    <span class="kicker">&nbsp;· No. {{ tasting.issue_number }}{% if not tasting.is_public %} · Private{% endif %}</span>
+    <h1>{{ tasting.name }}</h1>
+    {% if tasting.notes %}<p class="standfirst">{{ tasting.notes|standfirst }}</p>{% endif %}
+    <p class="article__byline">
+      <span>Tasted by <a href="{% url 'accounts:profile' tasting.author.username %}">{{ tasting.author.username }}</a></span>
+      <span>{{ tasting.producer|default:"Unknown producer" }}{% if tasting.origin %}, {{ tasting.origin }}{% endif %}</span>
+      <time datetime="{{ tasting.created_at|date:'c' }}">{{ tasting.created_at|date:"j F Y" }}</time>
+    </p>
+  </header>
+
+  <div class="article__layout">
+    <div>
+      {% with rest=tasting.notes|rest_of %}
+        {% if rest %}
+          <div class="prose"><p>{{ rest|linebreaksbr }}</p></div>
+        {% endif %}
+      {% endwith %}
+
+      <section class="section section--tight" aria-labelledby="flavours-title">
+        <div class="section__head"><h2 id="flavours-title">On the palate</h2></div>
+        <ul class="flavor-list">
+          {% for f in data.flavor_details %}
+            <li><a class="chip" href="{% url 'tastings:journal' %}?flavor={{ f.id }}"><span class="chip__dot" style="--dot: {{ f.color }}"></span>{{ f.label }}</a></li>
+          {% empty %}
+            <li class="muted"><em>No flavours noted.</em></li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="section kindred" aria-labelledby="kindred-title" data-kindred data-id="{{ tasting.pk }}">
+        <div class="section__head">
+          <h2 id="kindred-title">Kindred tastes</h2>
+          <div class="kindred__tabs" role="group" aria-label="Kindred scope">
+            <button class="chip is-active" type="button" data-cross="0" aria-pressed="true">Anywhere</button>
+            <button class="chip" type="button" data-cross="1" aria-pressed="false">Across categories</button>
+          </div>
+        </div>
+        <div class="columns" data-kindred-grid>
+          <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+      </section>
+
+      <section class="section letters" aria-labelledby="letters-title" data-letters data-id="{{ tasting.pk }}">
+        <div class="section__head">
+          <h2 id="letters-title">Letters</h2>
+          <span class="kicker" data-letter-count>{{ data.comment_count }} letter{{ data.comment_count|pluralize }}</span>
+        </div>
+        <ul class="letters__list" data-letter-list></ul>
+        {% if user.is_authenticated %}
+          <form class="letters__form" data-letter-form novalidate>
+            <div class="field">
+              <label class="field__label" for="letter-text">Write to the author</label>
+              <textarea class="input input--area" id="letter-text" name="text" maxlength="1000" required placeholder="Your impressions, a question, a pairing idea…"></textarea>
+              <span class="letters__counter" data-counter>0 / 1000</span>
+            </div>
+            <div><button class="btn btn--primary" type="submit">Send letter</button></div>
+          </form>
+        {% else %}
+          <p class="muted"><a href="{% url 'accounts:login' %}?next={{ request.path }}">Sign in</a> to write a letter.</p>
+        {% endif %}
+      </section>
+    </div>
+
+    <aside class="article__aside">
+      <div class="verdict-box">
+        <span class="verdict-box__score numeral">{{ tasting.score }}</span>
+        <span class="verdict-box__word">{{ tasting.score|verdict }}<br><span class="kicker">out of 100</span></span>
+      </div>
+
+      <figure class="figure">
+        <div data-radar="{{ tasting.profile|as_json }}" data-labels data-values></div>
+        <figcaption class="sr-only">Sensory profile</figcaption>
+      </figure>
+
+      {% if details %}
+        <dl class="spec">
+          <p class="spec__title">Particulars</p>
+          {% for label, value in details %}
+            <div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+          {% endfor %}
+        </dl>
+      {% endif %}
+
+      <div class="article__actions">
+        <button class="savour" type="button" data-like data-id="{{ tasting.pk }}"
+                aria-pressed="{{ data.liked|yesno:'true,false' }}"
+                {% if not user.is_authenticated %}data-login="{% url 'accounts:login' %}?next={{ request.path }}"{% endif %}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.2 4c2 0 3.6 1.1 4.8 2.8C13.2 5.1 14.8 4 16.8 4c3.6 0 5.8 3.6 4.5 7.1-1.8 4.8-9.3 9.4-9.3 9.4z"/></svg>
+          <span>Savour</span> <span data-like-count>{{ data.like_count }}</span>
+        </button>
+        <a class="btn btn--ghost btn--small" href="{% url 'tastings:compare' %}?a={{ tasting.pk }}">Compare</a>
+        {% if data.can_edit %}
+          <a class="btn btn--ghost btn--small" href="{% url 'tastings:edit' tasting.pk %}">Edit</a>
+          <button class="btn btn--danger btn--small" type="button" data-delete data-id="{{ tasting.pk }}">Delete</button>
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+</article>
+
+{% if data.can_edit %}
+  <dialog class="dialog" data-delete-dialog aria-labelledby="delete-title">
+    <h2 id="delete-title">Pour it away?</h2>
+    <p>“{{ tasting.name }}” and its letters will be removed from the journal. This cannot be undone.</p>
+    <form method="dialog" class="dialog__actions">
+      <button class="btn btn--quiet" value="cancel">Keep it</button>
+      <button class="btn btn--accent" value="confirm">Delete</button>
+    </form>
+  </dialog>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="{% static 'js/pages/detail.js' %}"></script>
+{% endblock %}

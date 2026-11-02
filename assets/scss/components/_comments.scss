@@ -1,0 +1,67 @@
+@use "../abstracts" as *;
+
+.letters {
+  &__list {
+    @extend %reset-list;
+
+    margin-bottom: space(4);
+  }
+
+  &__item {
+    @include rule;
+
+    padding: space(2) 0;
+    animation: rise 400ms $ease-out both;
+
+    p {
+      margin: space(1) 0 0;
+    }
+  }
+
+  &__head {
+    display: flex;
+    gap: space(2);
+    align-items: baseline;
+    justify-content: space-between;
+    font-family: $font-mono;
+    font-size: step(-2);
+    color: c(muted);
+
+    a {
+      font-weight: 600;
+      color: c(ink);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+  }
+
+  &__delete {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: c(muted);
+    font-family: $font-mono;
+    font-size: step(-2);
+    text-decoration: underline;
+
+    &:hover {
+      color: c(danger);
+    }
+  }
+
+  &__form {
+    display: grid;
+    gap: space(2);
+  }
+
+  &__counter {
+    font-family: $font-mono;
+    font-size: step(-2);
+    color: c(muted);
+
+    &.is-over {
+      color: c(danger);
+    }
+  }
+}

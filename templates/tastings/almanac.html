@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}The Almanac — Palate{% endblock %}
+
+{% block content %}
+  <header class="page-head">
+    <div>
+      <span class="kicker">Statistics</span>
+      <h1>The Almanac</h1>
+    </div>
+    <div class="cluster" role="group" aria-label="Filter by category" data-almanac-filter>
+      <button class="chip is-active" type="button" data-category="" aria-pressed="true">All</button>
+      {% for value, label in categories %}
+        <button class="chip cat-{{ value }}" type="button" data-category="{{ value }}" aria-pressed="false"><span class="chip__dot" style="--dot: var(--cat)"></span>{{ label }}</button>
+      {% endfor %}
+    </div>
+  </header>
+
+  <div class="numbers" data-almanac-totals></div>
+
+  <div class="almanac section">
+    <section class="almanac__panel">
+      <h2>Entries by category</h2>
+      <div data-chart="categories"><div class="skeleton"></div></div>
+    </section>
+    <section class="almanac__panel">
+      <h2>Score distribution</h2>
+      <div data-chart="scores"><div class="skeleton"></div></div>
+    </section>
+    <section class="almanac__panel">
+      <h2>Flavour families</h2>
+      <div data-chart="families"><div class="skeleton"></div></div>
+    </section>
+    <section class="almanac__panel">
+      <h2>Most noted flavours</h2>
+      <div data-chart="flavors"><div class="skeleton"></div></div>
+    </section>
+    <section class="almanac__panel">
+      <h2>The average palate</h2>
+      <div data-chart="profiles"><div class="skeleton"></div></div>
+    </section>
+    <section class="almanac__panel">
+      <h2>Origins on record</h2>
+      <div data-chart="origins"><div class="skeleton"></div></div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script type="module" src="{% static 'js/pages/almanac.js' %}"></script>
+{% endblock %}
